@@ -5,6 +5,7 @@
 package phonecontacts;
 
 import java.awt.Color;
+import javax.swing.JFrame;
 
 /**
  *
@@ -17,12 +18,12 @@ public class PhoneContacts {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        frm f = new frm() ;
-        f.setVisible(true);
-        f.setLocationRelativeTo(null);
-        f.setTitle(" Phone contacts" );
-        f.getContentPane().setBackground(new Color(37,138,250));
-
+        //frm f = new frm() ;
+        login l = new login() ;
+        l.setVisible(true);
+        l.setLocationRelativeTo(null);
+        l.setTitle(" Phone contacts" );
+        l.getContentPane().setBackground(new Color(37,138,250));
     }
     
 }

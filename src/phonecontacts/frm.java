@@ -5,10 +5,17 @@
 package phonecontacts;
 
 import java.awt.Color;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
+import java.sql.* ;
+import javax.swing.JOptionPane;
+import static phonecontacts.login.user;
 
 /**
  *
@@ -16,12 +23,54 @@ import javax.swing.table.TableRowSorter;
  */
 public class frm extends javax.swing.JFrame {
     private int selectedRaw;
+    
+    Connection con;
+   Statement stage;
+   ResultSet rs;
+   PreparedStatement ss;
+   DefaultTableModel model;
     /**
      * Creates new form frm
      */
-    public frm() {
+     public frm() {
         initComponents();
+        C_data();
+        desplayData();
     }
+    public void desplayData(){
+        try{  
+        con = DriverManager.getConnection("jdbc:mysql://localhost:3306/mysql","root","toor");
+        stage = con.createStatement();
+
+        rs = stage.executeQuery("select name , email , phone from `phone contacts`.contacts where user_name = '"+user+"'"); 
+        //rs.setString(1, user);
+        while(rs.next()){
+            String name = rs.getString(1);
+            String mail = rs.getString(2); 
+            String Phone = rs.getString(3);
+            Object contact [] = {name , mail, Phone};
+            
+            model = (DefaultTableModel)jTable1.getModel();
+            model.addRow(contact);
+        }
+        
+        }catch(SQLException err){       
+            JOptionPane.showMessageDialog(null,err.getMessage());
+        }
+    }
+    
+     public void C_data() {
+         try{
+        con = DriverManager.getConnection("jdbc:mysql://localhost:3306/mysql","root","toor");
+        stage = con.createStatement();
+       String SQL = "SELECT * FROM contacts";
+        rs = stage.executeQuery(SQL);
+    }
+    catch(SQLException err){
+            JOptionPane.showMessageDialog(null,err.getMessage());
+
+    }
+     }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -173,14 +222,7 @@ public class frm extends javax.swing.JFrame {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {"yousef agami", "yousefma@gmail.com", "01050564112"},
-                {"mahmoud", "ahmedma@gmail.com", "01029327288"},
-                {"ali", "alissa@gmail.com", "01138792201"},
-                {"Muhanned ", "Muhanned 11@mail.com", "01238479382"},
-                {"Leon", "Leon7332@link.com", "01002873682"},
-                {"Seif eldin ", "Seifeldin@gmail.com ", "01232393289"},
-                {"Rgaie", "Rgaie67@mlink.com", "01083762083"},
-                {"Abdelrahman ", "Abdelra@gmail.com", "01586352793"}
+
             },
             new String [] {
                 "Name", "Email", "Phone Number"
@@ -256,7 +298,7 @@ public class frm extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(12, 12, 12)))
-                .addContainerGap(22, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -264,9 +306,22 @@ public class frm extends javax.swing.JFrame {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
 
-        DefaultTableModel model;
         model = (DefaultTableModel)jTable1.getModel();
         model.addRow(new Object[]{t1.getText(),t2.getText(),t3.getText()});
+        
+        
+       try{    
+        con = DriverManager.getConnection("jdbc:mysql://localhost:3306/mysql","root","toor");
+        ss=con.prepareStatement("insert into `phone contacts`.contacts (name,email,phone,user_name) values(?,?,?,?)");
+        ss.setString(1,t1.getText());
+        ss.setString(2,t2.getText());
+        ss.setString(3,t3.getText());
+        ss.setString(4,user);
+        ss.executeUpdate();
+       
+       } catch(SQLException err){
+            JOptionPane.showMessageDialog(null,err.getMessage());
+       }
 
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton3ActionPerformed
